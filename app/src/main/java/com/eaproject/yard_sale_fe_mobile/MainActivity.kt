@@ -25,7 +25,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    loginPage(viewModel = username())
+                    val viewModel = username()
+                    loginPage(viewModel)
+                    homePage(viewModel)
+                    this.application
 
 //                    Greeting()
                 }
@@ -47,6 +50,7 @@ class username : ViewModel() {
 @Composable
 fun loginPage(viewModel: username) {
         var testo by remember { mutableStateOf("") }
+    Log.d("Composable", "Carico loginpage")
 
         Column {
             TextField(
@@ -62,13 +66,12 @@ fun loginPage(viewModel: username) {
                 Text("Premi")
             }
 
-            homePage(viewModel = username())
         }
 }
 
 @Composable
 fun homePage(viewModel: username) {
-    Log.d("Composable", "Valore ricevuto da userInput: ${viewModel.user.collectAsState().value}")
+    Log.d("Composable", "Homepage: userInput = ${viewModel.user.collectAsState().value}")
     val receivedText = viewModel.user.collectAsState().value
     Text("Ciao: ${viewModel.user.collectAsState().value}")
 }
