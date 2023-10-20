@@ -1,6 +1,7 @@
 package com.eaproject.yard_sale_fe_mobile
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -9,7 +10,10 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModel
 import com.eaproject.yard_sale_fe_mobile.ui.theme.Yard_Sale_FE_MobileTheme
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,63 +25,58 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting()
-//                    var clickCount by remember { mutableStateOf(0)}
-//                    ClickCounter(clicks = clickCount, onClick = {
-//                        clickCount += 1
-//                    })
+                    loginPage(viewModel = username())
 
+//                    Greeting()
                 }
             }
         }
     }
 }
 
-//@Composable
-//fun Greeting(name: String) {
-//    Text(text = "Hello $name!")
-//}
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun DefaultPreview() {
-//    Yard_Sale_FE_MobileTheme {
-//        Greeting("Android")
-//    }
-//}
+
+class username : ViewModel() {
+    val userInput = MutableStateFlow("")
+    val user: StateFlow<String> = userInput
+    fun updateText(text: String) {
+        userInput.value = text
+        Log.d("ViewModel", "Nuovo valore di userInput: ${userInput.value}")
+    }
+}
 
 @Composable
-fun ClickCounter(clicks: Int, onClick: () -> Unit) {
-    Column() {
-        Button(onClick = onClick) {
-            Text(text = "Number of clicks: $clicks")
+fun loginPage(viewModel: username) {
+        var testo by remember { mutableStateOf("") }
+
+        Column {
+            TextField(
+                value = testo,
+                onValueChange = { newTesto -> testo = newTesto},
+            )
+
+            Button(
+                onClick = {
+                    viewModel.updateText(testo)
+                }
+            ) {
+                Text("Premi")
+            }
+
+            homePage(viewModel = username())
         }
-    }
 }
 
-
-//@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TextFieldExample() {
-//    var myContent by remember { mutableStateOf("") }
-     var (myContent, setValue) = remember { mutableStateOf("") }
-//    setValue("ciao")
-    Column {
-        TextField(
-            value = myContent,
-            onValueChange = { content -> myContent = content },
-            // onValueChange = { setValue(it) },
-            label = { Text("") },
-            placeholder = { Text(text = "Your content") }
-        )
-    }
+fun homePage(viewModel: username) {
+    Log.d("Composable", "Valore ricevuto da userInput: ${viewModel.user.collectAsState().value}")
+    val receivedText = viewModel.user.collectAsState().value
+    Text("Ciao: ${viewModel.user.collectAsState().value}")
 }
 
-//@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Greeting() {
     var userFirstName by remember { mutableStateOf("") }
-    var updated = 1
+    var updated by remember { mutableStateOf(1)}
     var obs by remember { mutableStateOf(" obs")}
     Column {
         Text(
