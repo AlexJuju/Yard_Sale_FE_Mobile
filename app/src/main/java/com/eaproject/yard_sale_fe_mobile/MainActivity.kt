@@ -1,15 +1,16 @@
 package com.eaproject.yard_sale_fe_mobile
 
+import android.content.ClipData.Item
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModel
 import com.eaproject.yard_sale_fe_mobile.ui.theme.Yard_Sale_FE_MobileTheme
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,10 +26,16 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    val viewModel = username()
-                    loginPage(viewModel)
-                    homePage(viewModel)
-                    this.application
+                    var state by remember { mutableStateOf(false) }
+                    if(state)
+                        compOne { state = false }
+                    else
+                        compTwo { state = true }
+
+//                    val viewModel = username()
+//                    loginPage(viewModel)
+//                    homePage(viewModel)
+//                    this.application
 
 //                    Greeting()
                 }
@@ -37,6 +44,27 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@Composable
+fun compOne( onContentChange: () -> Unit ){
+    LazyColumn{item {
+        Button(
+            onClick = onContentChange
+        ) {
+            Text("vai a pagina 2")
+        }
+    }}
+}
+
+@Composable
+fun compTwo( onContentChange: () -> Unit ){
+    LazyColumn{item {
+        Button(
+            onClick = onContentChange
+        ) {
+            Text("vai a pagina 1")
+        }
+    }}
+}
 
 class username : ViewModel() {
     val userInput = MutableStateFlow("")
