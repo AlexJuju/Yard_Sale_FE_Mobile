@@ -1,16 +1,20 @@
 package com.eaproject.yard_sale_fe_mobile
 
-import android.content.ClipData.Item
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import com.eaproject.yard_sale_fe_mobile.ui.theme.Yard_Sale_FE_MobileTheme
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +24,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Yard_Sale_FE_MobileTheme {
+//            Yard_Sale_FE_MobileTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -39,18 +43,28 @@ class MainActivity : ComponentActivity() {
 
 //                    Greeting()
                 }
-            }
+//            }
         }
     }
 }
 
 @Composable
-fun compOne( onContentChange: () -> Unit ){
+fun compOne(onContentChange: () -> Unit){
     LazyColumn{item {
+
         Button(
             onClick = onContentChange
         ) {
-            Text("vai a pagina 2")
+            val modifier = Modifier
+            Text("vai a pagina 2",
+                modifier
+                    .padding(50.dp)
+//                    .background(Color.Black)
+                    .weight(2f)
+                    ,
+                color = Color.Red,
+//                style = TextStyle(color = Color.Red)
+            )
         }
     }}
 }
@@ -128,3 +142,13 @@ fun Greeting() {
         }
     }
 }
+
+//new Studente("noem", "cognome")
+//new Studente("noem1", "cognome2")
+//new Studente("noem1", "cognome3")
+//        L oggetto studente è stateless
+//
+//class Studente() {
+//    nome = pippo
+//}
+
