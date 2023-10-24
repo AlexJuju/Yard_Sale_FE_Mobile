@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -34,20 +35,42 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    var state by remember { mutableStateOf(false) }
+//                    var viewModel = Username()
+                    var viewModel by remember { mutableStateOf(Username()) }
+                    var state by remember { mutableStateOf(true) }
                     if (state) {
-                        compOne { state = false }
+                        compOne(viewModel) { state = false }
                     } else {
-                        compTwo { state = true }
+                        compTwo(viewModel) { state = true }
                     }
+
+//                    loginPage(viewModel)
+//                    homePage(viewModel)
                 }
             }
         }
     }
 }
 
+class Username : ViewModel() {
+    private val userInput = MutableStateFlow("")
+    val user: StateFlow<String> = userInput
+
+    fun updateText(text: String) {
+        userInput.value = text
+        Log.d("ViewModel", "Nuovo valore di userInput: ${userInput.value}")
+    }
+
+    fun getText(): String {
+        return userInput.value
+    }
+}
+
 @Composable
-fun compOne(onContentChange: () -> Unit){
+fun compOne(viewModel: Username, onContentChange: () -> Unit){
+    Log.d("compOne", "Carico compOne")
+    var textArea by remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -55,72 +78,86 @@ fun compOne(onContentChange: () -> Unit){
     ) {
         LazyColumn {
             item {
-                    Button(
-                        onClick = onContentChange,
-                        modifier = Modifier
-                            .background(Color.Yellow)
-                            .fillMaxSize()
-                            .padding(50.dp)
+                TextField(
+                    value = textArea,
+                    onValueChange = { newTesto -> textArea = newTesto },
+                    modifier = Modifier
+                        .background(Color.White, CircleShape)
+                )
+                Button(
+                    onClick = {
+                        viewModel.updateText(textArea)
+                        Log.d("UpdateTest", "updateText() eseguita con testo: $textArea")
+//                        CoroutineScope(Dispatchers.Default).launch {
+//                            delay(5000)
+//                            onContentChange()
+//                        }
+                        onContentChange()
+                    },
+                    modifier = Modifier
+                        .background(Color.Yellow)
+                        .fillMaxSize()
+                        .padding(50.dp)
 
-                    ) {
-                        Text(
-                            "vai a pagina 1",
-                            style = TextStyle(
-                                fontSize = 20.sp,
-                                color = Color.Red,
-                                textAlign = TextAlign.Center,
-                                background = Color.Black
-                            )
+                ) {
+                    Text(
+                        "vai a pagina 2",
+                        style = TextStyle(
+                            fontSize = 20.sp,
+                            color = Color.Red,
+                            textAlign = TextAlign.Center,
+                            background = Color.Black
                         )
-                    }
+                    ) }
                 }
             }
     }
 }
+
 @Composable
-fun compTwo( onContentChange: () -> Unit ){
-    LazyColumn{item {
-        Button(
-            onClick = onContentChange
-        ) {
-            Text("vai a pagina 2")
-        }
-    }}
+fun compTwo(viewModel: Username, onContentChange: () -> Unit){
+    Log.d("compTwo", "Carico compTwo")
+    Log.d("Composable", "Homepage: userInput = ${viewModel.user.collectAsState().value}")
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        LazyColumn{item {
+            Text("Messaggio: ${viewModel.user.collectAsState().value}")
+            Button(
+                onClick = onContentChange
+            ) {
+                Text("vai a pagina 1")
+            }
+        }}
+    }
 }
 /*********************************************************************************/
-class username : ViewModel() {
-    val userInput = MutableStateFlow("")
-    val user: StateFlow<String> = userInput
-    fun updateText(text: String) {
-        userInput.value = text
-        Log.d("ViewModel", "Nuovo valore di userInput: ${userInput.value}")
+
+@Composable
+fun loginPage(viewModel: Username) {
+    var testo by remember { mutableStateOf("") }
+    Log.d("Composable", "Carico loginpage")
+
+    Column {
+        TextField(
+            value = testo,
+            onValueChange = { newTesto -> testo = newTesto},
+        )
+
+        Button(
+            onClick = {
+                viewModel.updateText(testo)
+            }
+        ) {
+            Text("Premi")
+        }
     }
 }
 
 @Composable
-fun loginPage(viewModel: username) {
-        var testo by remember { mutableStateOf("") }
-    Log.d("Composable", "Carico loginpage")
-
-        Column {
-            TextField(
-                value = testo,
-                onValueChange = { newTesto -> testo = newTesto},
-            )
-
-            Button(
-                onClick = {
-                    viewModel.updateText(testo)
-                }
-            ) {
-                Text("Premi")
-            }
-
-        }
-}
-
-@Composable
-fun homePage(viewModel: username) {
+fun homePage(viewModel: Username) {
     Log.d("Composable", "Homepage: userInput = ${viewModel.user.collectAsState().value}")
     val receivedText = viewModel.user.collectAsState().value
     Text("Ciao: ${viewModel.user.collectAsState().value}")
