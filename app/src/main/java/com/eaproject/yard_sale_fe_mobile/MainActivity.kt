@@ -21,9 +21,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavHostController
 import com.eaproject.yard_sale_fe_mobile.ui.theme.Yard_Sale_FE_MobileTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+
+enum class ScreenNav() {
+    Page_one,
+    Page_two
+}
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,17 +45,17 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-//                    var viewModel = Username()
-                    var viewModel by remember { mutableStateOf(Username()) }
-                    var state by remember { mutableStateOf(true) }
-                    if (state) {
-                        compOne(viewModel) { state = false }
-                    } else {
-                        compTwo(viewModel) { state = true }
-                    }
+//                    var viewModel by remember { mutableStateOf(Username()) }
+//                    var state by remember { mutableStateOf(true) }
+//                    if (state) {
+//                        compOne(viewModel) { state = false }
+//                    } else {
+//                        compTwo(viewModel) { state = true }
+//                    }
+                    var navController = rememberNavController()
+                    var viewModel = Username()
 
-//                    loginPage(viewModel)
-//                    homePage(viewModel)
+                    navigationTest(navController, viewModel)
                 }
             }
         }
@@ -60,9 +70,24 @@ class Username : ViewModel() {
         userInput.value = text
         Log.d("ViewModel", "Nuovo valore di userInput: ${userInput.value}")
     }
+}
 
-    fun getText(): String {
-        return userInput.value
+@Composable
+fun navigationTest(navController: NavHostController, viewModel: Username) {
+    NavHost(
+        navController = navController,
+        startDestination = ScreenNav.Page_one.name
+    ) {
+        composable(ScreenNav.Page_one.name) {
+            compOne(viewModel) {
+                navController.navigate(ScreenNav.Page_two.name)
+            }
+        }
+        composable(ScreenNav.Page_two.name) {
+            compTwo(viewModel) {
+                navController.navigate(ScreenNav.Page_one.name)
+            }
+        }
     }
 }
 
@@ -82,8 +107,9 @@ fun compOne(viewModel: Username, onContentChange: () -> Unit){
                     value = textArea,
                     onValueChange = { newTesto -> textArea = newTesto },
                     modifier = Modifier
-                        .background(Color.White, CircleShape)
-                )
+                        .background(Color.White, CircleShape),
+                    textStyle = TextStyle(color = Color.Black, fontSize = 16.sp)
+                    )
                 Button(
                     onClick = {
                         viewModel.updateText(textArea)
