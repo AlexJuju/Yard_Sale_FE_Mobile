@@ -29,31 +29,27 @@ import kotlinx.coroutines.flow.StateFlow
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.eaproject.yard_sale_fe_mobile.controller.navigationTest
+import com.eaproject.yard_sale_fe_mobile.core.Username
+import com.eaproject.yard_sale_fe_mobile.layout.compOne
+import com.eaproject.yard_sale_fe_mobile.layout.compTwo
 
-enum class ScreenNav() {
-    Page_one,
-    Page_two
-}
+//enum class ScreenNav() {
+//    Page_one,
+//    Page_two
+//}
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             Yard_Sale_FE_MobileTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-//                    var viewModel by remember { mutableStateOf(Username()) }
-//                    var state by remember { mutableStateOf(true) }
-//                    if (state) {
-//                        compOne(viewModel) { state = false }
-//                    } else {
-//                        compTwo(viewModel) { state = true }
-//                    }
-                    var navController = rememberNavController()
                     var viewModel = Username()
+                    var navController = rememberNavController()
 
                     navigationTest(navController, viewModel)
                 }
@@ -62,103 +58,98 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-class Username : ViewModel() {
-    private val userInput = MutableStateFlow("")
-    val user: StateFlow<String> = userInput
+//class Username : ViewModel() {
+//    private val userInput = MutableStateFlow("")
+//    val user: StateFlow<String> = userInput
+//
+//    fun updateText(text: String) {
+//        userInput.value = text
+//    }
+//}
 
-    fun updateText(text: String) {
-        userInput.value = text
-        Log.d("ViewModel", "Nuovo valore di userInput: ${userInput.value}")
-    }
-}
+//@Composable
+//fun navigationTest(navController: NavHostController, viewModel: Username) {
+//    NavHost(
+//        navController = navController,
+//        startDestination = ScreenNav.Page_one.name
+//    ) {
+//        composable(ScreenNav.Page_one.name) {
+//            compOne(viewModel) {
+//                navController.navigate(ScreenNav.Page_two.name)
+//            }
+//        }
+//        composable(ScreenNav.Page_two.name) {
+//            compTwo(viewModel) {
+//                navController.navigate(ScreenNav.Page_one.name)
+//            }
+//        }
+//    }
+//}
 
-@Composable
-fun navigationTest(navController: NavHostController, viewModel: Username) {
-    NavHost(
-        navController = navController,
-        startDestination = ScreenNav.Page_one.name
-    ) {
-        composable(ScreenNav.Page_one.name) {
-            compOne(viewModel) {
-                navController.navigate(ScreenNav.Page_two.name)
-            }
-        }
-        composable(ScreenNav.Page_two.name) {
-            compTwo(viewModel) {
-                navController.navigate(ScreenNav.Page_one.name)
-            }
-        }
-    }
-}
+//@Composable
+//fun compOne(viewModel: Username, onContentChange: () -> Unit){
+//    Log.d("compOne", "Carico compOne")
+//    var textArea by remember { mutableStateOf("") }
+//
+//    Column(
+//        modifier = Modifier.fillMaxSize(),
+//        verticalArrangement = Arrangement.Center,
+//        horizontalAlignment = Alignment.CenterHorizontally
+//    ) {
+//        LazyColumn {
+//            item {
+//                TextField(
+//                    value = textArea,
+//                    onValueChange = { newTesto -> textArea = newTesto },
+//                    modifier = Modifier
+//                        .background(Color.White, CircleShape),
+//                    textStyle = TextStyle(color = Color.Black, fontSize = 16.sp)
+//                    )
+//                Button(
+//                    onClick = {
+//                        viewModel.updateText(textArea)
+//                        Log.d("UpdateTest", "updateText() eseguita con testo: $textArea")
+//                        onContentChange()
+//                    },
+//                    modifier = Modifier
+//                        .background(Color.Yellow)
+//                        .fillMaxSize()
+//                        .padding(50.dp)
+//
+//                ) {
+//                    Text(
+//                        "vai a pagina 2",
+//                        style = TextStyle(
+//                            fontSize = 20.sp,
+//                            color = Color.Red,
+//                            textAlign = TextAlign.Center,
+//                            background = Color.Black
+//                        )
+//                    ) }
+//                }
+//            }
+//    }
+//}
 
-@Composable
-fun compOne(viewModel: Username, onContentChange: () -> Unit){
-    Log.d("compOne", "Carico compOne")
-    var textArea by remember { mutableStateOf("") }
-
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        LazyColumn {
-            item {
-                TextField(
-                    value = textArea,
-                    onValueChange = { newTesto -> textArea = newTesto },
-                    modifier = Modifier
-                        .background(Color.White, CircleShape),
-                    textStyle = TextStyle(color = Color.Black, fontSize = 16.sp)
-                    )
-                Button(
-                    onClick = {
-                        viewModel.updateText(textArea)
-                        Log.d("UpdateTest", "updateText() eseguita con testo: $textArea")
-//                        CoroutineScope(Dispatchers.Default).launch {
-//                            delay(5000)
-//                            onContentChange()
-//                        }
-                        onContentChange()
-                    },
-                    modifier = Modifier
-                        .background(Color.Yellow)
-                        .fillMaxSize()
-                        .padding(50.dp)
-
-                ) {
-                    Text(
-                        "vai a pagina 2",
-                        style = TextStyle(
-                            fontSize = 20.sp,
-                            color = Color.Red,
-                            textAlign = TextAlign.Center,
-                            background = Color.Black
-                        )
-                    ) }
-                }
-            }
-    }
-}
-
-@Composable
-fun compTwo(viewModel: Username, onContentChange: () -> Unit){
-    Log.d("compTwo", "Carico compTwo")
-    Log.d("Composable", "Homepage: userInput = ${viewModel.user.collectAsState().value}")
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        LazyColumn{item {
-            Text("Messaggio: ${viewModel.user.collectAsState().value}")
-            Button(
-                onClick = onContentChange
-            ) {
-                Text("vai a pagina 1")
-            }
-        }}
-    }
-}
+//@Composable
+//fun compTwo(viewModel: Username, onContentChange: () -> Unit){
+//    Log.d("compTwo", "Carico compTwo")
+//    Log.d("Composable", "Homepage: userInput = ${viewModel.user.collectAsState().value}")
+//    Column(
+//        modifier = Modifier.fillMaxSize(),
+//        verticalArrangement = Arrangement.Center,
+//        horizontalAlignment = Alignment.CenterHorizontally
+//    ) {
+//        LazyColumn{item {
+//            Text("Messaggio: ${viewModel.user.collectAsState().value}")
+//            Button(
+//                onClick = onContentChange
+//            ) {
+//                Text("vai a pagina 1")
+//            }
+//        }}
+//    }
+//}
 /*********************************************************************************/
 
 @Composable
