@@ -14,16 +14,16 @@ import androidx.compose.ui.Modifier
 import com.eaproject.yard_sale_fe_mobile.core.Username
 
 @Composable
-fun compTwo(viewModel: Username, onContentChange: () -> Unit){
+fun homePage(viewModel: String, onContentChange: () -> Unit){
     Log.d("compTwo", "Carico compTwo")
-    Log.d("Composable", "Homepage: userInput = ${viewModel.user.collectAsState().value}")
+//    Log.d("Composable", "Homepage: userInput = ${viewModel.user.collectAsState().value}")
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         LazyColumn{item {
-            Text("Messaggio: ${viewModel.user.collectAsState().value}")
+            Text("Messaggio: ${viewModel}")
             Button(
                 onClick = onContentChange
             ) {

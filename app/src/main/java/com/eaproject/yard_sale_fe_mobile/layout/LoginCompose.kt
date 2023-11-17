@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.sp
 import com.eaproject.yard_sale_fe_mobile.core.Username
 
 @Composable
-fun compOne(viewModel: Username, onContentChange: () -> Unit){
+fun loginPage(viewModel: Username, onContentChange: () -> Unit){
     Log.d("compOne", "Carico compOne")
     var textArea by remember { mutableStateOf("") }
 
